@@ -1,11 +1,13 @@
 local keys = { ['G'] = 0x760A9C6F, ['S'] = 0xD27782E3, ['W'] = 0x8FD015D8, ['H'] = 0x24978A28, ['G'] = 0x5415BE48, ["ENTER"] = 0xC7B5340A, ['E'] = 0xDFF812F9, ["J"] = 0xF3830D8E, ["SPACE"] = 0xD9D0E1C0 }
 
+--ADD HERE YOUR STORE NAME, BLIP, AND COORDINATES
 local blips = {
     { name = 'Tienda General', sprite = 1475879922,x = -321.89, y = 803.99, z = 117.88 }
 }
 
 local CurrentZoneActive = 0
 
+--CREATE ITEM LISTS FOR EACH CATEGORY
 local foodrinkItems = {
 
 	--COMPRAR--
@@ -15,12 +17,12 @@ local foodrinkItems = {
 		['Desc'] = "",
 		['Param'] = {
 			['Price'] = 1,
-			['Model'] = "consumable_peach",
-			['Level'] = 0,
-			['Cantidad'] = 1,
+			['Model'] = "consumable_peach", -- DB NAME
+			['Level'] = 0, -- LEVEL YOU NEED TO 
+			['Cantidad'] = 1, -- AMMOUNT OF ITEMS YOU WANNA BUY/SELL PER PRESSED ENTER
 			--['Gold'] = 0,
 			--['Rol'] = 0,
-			['maxInvSlots'] = 5,
+			['maxInvSlots'] = 5, -- INVENTORY LIMIT FOR THIS ITEM (SETTED ON DB)
 		}
 	},
 	{
@@ -309,16 +311,17 @@ end)
 --CREA MENU--
 
 Citizen.CreateThread( function()
-	WarMenu.CreateMenu('id_item', 'Tienda General', 'Interacción')
-	WarMenu.SetSubTitle('id_item', 'Comprar o vender')
+	WarMenu.CreateMenu('id_item', 'Tienda General', 'Interacción') -- MAIN MENU
+	WarMenu.SetSubTitle('id_item', 'Comprar o vender') -- MENU SUB TITLE
 
-    WarMenu.CreateSubMenu('buy', 'id_item', 'Comprar Suministros')
-    WarMenu.CreateSubMenu('fooddrink', 'buy', 'Comprar Suministros')
-    WarMenu.CreateSubMenu('seeds', 'buy', 'Plantación')
-    WarMenu.CreateSubMenu('camping', 'buy', 'Campamento')
+    WarMenu.CreateSubMenu('buy', 'id_item', 'Comprar Suministros') -- SUB MENU OF THE MAIN MENU
+    WarMenu.CreateSubMenu('fooddrink', 'buy', 'Comprar Suministros') -- SUB MENU OF THE BUY SUBMENU
+    WarMenu.CreateSubMenu('seeds', 'buy', 'Plantación') -- SUB MENU OF THE BUY SUBMENU
+    WarMenu.CreateSubMenu('camping', 'buy', 'Campamento') -- AND SO ON...
     WarMenu.CreateSubMenu('others', 'buy', 'Otros')
-    WarMenu.CreateSubMenu('sell', 'id_item', 'Vender Suministros')
+    WarMenu.CreateSubMenu('sell', 'id_item', 'Vender Suministros') -- SUB MENU OF THE MAIN MENU
 	repeat
+		--JUST USE THIS AS REFERENCE FOR ANYTHING ELSE YOU WANT TO ADD OR CREATE, EXPLORE THE POSSIBILITIES!
 		if WarMenu.IsMenuOpened('id_item') then
 			if WarMenu.MenuButton('Comprar Suministros', 'buy') then
             end
@@ -330,10 +333,14 @@ Citizen.CreateThread( function()
             if WarMenu.MenuButton('Plantación', 'seeds') then end
             if WarMenu.MenuButton('Campamento', 'camping') then end
             if WarMenu.MenuButton('Otros', 'others') then end
-            WarMenu.Display()
+			WarMenu.Display()
+			
+		-- CHECKS ALL THE ITEMS INSIDE THE LIST	
   		elseif WarMenu.IsMenuOpened('fooddrink') then
 			for i = 1, #foodrinkItems do
+				-- IF ENTER IS PRESSED
 				if WarMenu.Button(foodrinkItems[i]['Text'], foodrinkItems[i]['SubText'], foodrinkItems[i]['Desc']) then
+					-- BUY
 					TriggerServerEvent('fred2:buyitem', foodrinkItems[i]['Param'])
 					--WarMenu.CloseMenu()
 						Citizen.Wait(500)
@@ -393,20 +400,24 @@ Citizen.CreateThread(function()
 
 		local IsZone, IdZone = IsNearZone( Config.Coords )
 
+		-- IF PLAYER IS NEAR THIS COORDS SHOWS UP A CYLINDER
+		-- YOU WILL HAVE TO DUPLICATE THIS PIECE OF CODE AND CHANGE THE COORDINATES FOR NEW STORES
 		if IsPlayerNearCoords2(-321.89, 803.99, 117.88)then
 			Citizen.InvokeNative(0x2A32FAA57B937173, Markers.Cylinder, -321.89, 803.99, 117.88-0.95, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 0.25, 25, 163, 255, 50, 0, 0, 2, 0, 0, 0, 0)
 		end
 
+		-- IF THE PLAYER IS IN THE ZONE
 		if IsZone then
 			--TODO: DETECT IF ANY MENU IS OPENED
 			DrawTxt(Config.Shoptext, 0.50, 0.90, 0.7, 0.7, true, 255, 255, 255, 255, true)
 			--DisplayHelp(Config.Shoptext, 0.50, 0.95, 0.6, 0.6, true, 255, 255, 255, 255, true, 10000)
+			-- IF PLAYER PRESS DESIGNED KEY IT OPENS THE MAIN MENU
 			if IsControlJustPressed(0, keys['SPACE']) then
 				WarMenu.OpenMenu('id_item')		
 				CurrentZoneActive = IdZone
 			end
 
-		--Si no esta en la zona cierra el menu
+		-- IF NOT IN THE ZONE IT CLOSES THE MENU
 		elseif not IsZone then
 			WarMenu.CloseMenu()
 		end
