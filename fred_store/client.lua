@@ -426,11 +426,3 @@ Citizen.CreateThread(function()
 
 	end
 end)
-
-
--- | Notification | --
-
-RegisterNetEvent('fred:Notification')
-AddEventHandler('fred:Notification', function( _message )
-		TriggerEvent("vorp:TipRight", _message, 100)
-end)
