@@ -29,7 +29,7 @@ AddEventHandler( 'fred2:buyitem', function ( args )
     if (count < maxCount) then
 
         if u_money <= _price then
-            TriggerEvent("vorp:TipRight", Config.NoMoney, 100)   
+            TriggerClientEvent("vorp:TipRight", Config.NoMoney, 100)   
             return
         end
 
@@ -46,11 +46,11 @@ AddEventHandler( 'fred2:buyitem', function ( args )
 
         Character.removeCurrency(0, _price)
         VorpInv.addItem(_src, _model, 1)
-        TriggerEvent("vorp:TipRight", Config.Buy, 100) 
+        TriggerClientEvent("vorp:TipRight", Config.Buy, 100) 
 
         --TriggerClientEvent("fred:Notification", _src, 'Has comprado '..(count+1)..'/'..maxCount)   
     else
-        TriggerEvent("vorp:TipRight", Config.MaxSlots, 100)
+        TriggerClientEvent("vorp:TipRight", Config.MaxSlots, 100)
     end
 end)
 
@@ -75,15 +75,15 @@ AddEventHandler('fred2:sellitem', function(args)
     u_rols = Character.rol
 
     if (count == nil) then
-        TriggerEvent("vorp:TipRight", Config.NoMoney, 100)  
+        TriggerClientEvent("vorp:TipRight", Config.NoMoney, 100)  
     end
 
     if count >= _qty then
         VorpInv.subItem(_src, _model, _qty)
         Character.addCurrency(0, _price)
 
-        TriggerEvent("vorp:TipRight", Config.Sell, 100)
+        TriggerClientEvent("vorp:TipRight", Config.Sell, 100)
     else
-        TriggerEvent("vorp:TipRight", Config.NoItem, 100)
+        TriggerClientEvent("vorp:TipRight", Config.NoItem, 100)
     end
 end)
