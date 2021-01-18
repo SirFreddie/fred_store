@@ -6,3 +6,9 @@ With this you can create stores where the player can buy or sell items. You can 
 If you don't know how to create more sub menus or to add new items just use my code as a reference (that's what i did).
 
 This is a RedM resource made for VORP Framework.
+
+## CHANGELOG:
+
+```
+18/01/21 - Corrected notifications not showing up.
+```
